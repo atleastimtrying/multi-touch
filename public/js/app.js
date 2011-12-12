@@ -14,19 +14,23 @@
     };
   };
 
-  window.drawdot = function(touch, first) {
+  window.drawdot = function(touch, count, array) {
     window.processing.ellipse(touch.pageX, touch.pageY, 30, 30);
-    return window.processing.line(touch.pageX, touch.pageY, first.pageX, first.pageY);
+    if (count === array.length - 1) {
+      return window.processing.line(touch.pageX, touch.pageY, array[0].pageX, array[0].pageY);
+    } else {
+      return window.processing.line(touch.pageX, touch.pageY, array[count + 1].pageX, array[count + 1].pageY);
+    }
   };
 
   window.touches = function(e) {
-    var touch, _i, _len, _ref, _results;
+    var count, touch, _len, _ref, _results;
     e.preventDefault();
     _ref = e.originalEvent.touches;
     _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      touch = _ref[_i];
-      _results.push(window.drawdot(touch, e.originalEvent.touches[0]));
+    for (count = 0, _len = _ref.length; count < _len; count++) {
+      touch = _ref[count];
+      _results.push(window.drawdot(touch, count, e.originalEvent.touches));
     }
     return _results;
   };

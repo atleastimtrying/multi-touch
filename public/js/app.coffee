@@ -10,12 +10,16 @@ window.sketch = (p5) ->
     p5.rect 0, 0, p5.width, p5.height
     p5.stroke 255
 
-window.drawdot = (touch, first)->
+window.drawdot = (touch, count, array)->
   window.processing.ellipse touch.pageX, touch.pageY, 30, 30
-  window.processing.line touch.pageX, touch.pageY, first.pageX, first.pageY
+  if count is array.length - 1
+    window.processing.line(touch.pageX, touch.pageY, array[0].pageX, array[0].pageY)
+  else
+    window.processing.line(touch.pageX, touch.pageY, array[count + 1].pageX, array[count + 1].pageY)
+
 window.touches = (e)->
   e.preventDefault();
-  window.drawdot touch, e.originalEvent.touches[0] for touch in e.originalEvent.touches
+  window.drawdot touch, count, e.originalEvent.touches for touch, count in e.originalEvent.touches
 
 $ ->
   canvas = $("canvas")
