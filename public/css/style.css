@@ -1,0 +1,13 @@
+*{
+  margin:0;
+  padding:0;
+  border:0;
+}
+html{
+  background:#000000;
+}
+canvas{
+  position:absolute;
+  width:100%;
+  height:100%;
+}
