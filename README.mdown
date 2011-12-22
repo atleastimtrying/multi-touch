@@ -1,7 +1,7 @@
 #Gravity
 
 This project is intended for me to explore the possibilities of drawing with multi touch.
-now with no jquery!
+now with no external apis!
 
 Anders
 ^__^

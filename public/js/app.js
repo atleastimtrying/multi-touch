@@ -1,47 +1,63 @@
+(function() {
+  var animate, drawtouch, ellipse;
 
-  window.onload = function() {
-    window.processing = new Processing(document.getElementById('view'), window.sketch);
-    return document.getElementById('view').ontouchmove = window.touches;
+  animate = function() {
+    window.context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    window.context.fillRect(0, 0, window.canvas.width, window.canvas.height);
+    return window.setTimeout(animate);
   };
 
-  window.sketch = function(p5) {
-    p5.setup = function() {
-      p5.colorMode(p5.HSB, 300, 10, 10, 10);
-      p5.size(window.innerWidth, window.innerHeight);
-      p5.smooth();
-      return p5.background(0);
-    };
-    return p5.draw = function() {
-      p5.noStroke();
-      p5.fill(0, 0, 0, 0.8);
-      p5.rect(0, 0, p5.width, p5.height);
-      return p5.stroke(255);
-    };
+  ellipse = function(x, y) {
+    window.context.strokeStyle = '#ffffff';
+    window.context.beginPath();
+    window.context.arc(x, y, 10, 0, Math.PI * 2, false);
+    window.context.closePath();
+    return context.stroke();
   };
 
-  window.drawdot = function(touch, count, array) {
-    window.processing.ellipse(touch.pageX, touch.pageY, 30, 30);
+  drawtouch = function(touch, count, array) {
+    ellipse(touch.pageX, touch.pageY);
+    window.context.moveTo(touch.pageX, touch.pageY);
     if (count === array.length - 1) {
-      return window.processing.line(touch.pageX, touch.pageY, array[0].pageX, array[0].pageY);
+      window.context.lineTo(array[0].pageX, array[0].pageY);
     } else {
-      return window.processing.line(touch.pageX, touch.pageY, array[count + 1].pageX, array[count + 1].pageY);
+      window.context.lineTo(array[count + 1].pageX, array[count + 1].pageY);
     }
-  };
-
-  window.touches = function(e) {
-    var count, touch, _len, _ref, _results;
-    e.preventDefault();
-    _ref = e.touches;
-    _results = [];
-    for (count = 0, _len = _ref.length; count < _len; count++) {
-      touch = _ref[count];
-      _results.push(window.drawdot(touch, count, e.touches));
-    }
-    return _results;
+    return window.context.stroke();
   };
 
   window.onresize = function(e) {
-    (document.getElementById('view')).style.width = window.innerWidth;
-    (document.getElementById('view')).style.height = window.innerHeight;
-    return window.processing.size(window.innerWidth, window.innerHeight);
+    window.canvas.width = window.canvas.offsetWidth = window.innerWidth;
+    return window.canvas.height = window.canvas.offsetHeight = window.innerHeight;
   };
+
+  window.onload = function() {
+    window.canvas = document.getElementById('view');
+    window.context = window.canvas.getContext('2d');
+    window.mouseIsDown = false;
+    window.canvas.ontouchmove = function(e) {
+      var count, touch, _len, _ref, _results;
+      e.preventDefault();
+      _ref = e.touches;
+      _results = [];
+      for (count = 0, _len = _ref.length; count < _len; count++) {
+        touch = _ref[count];
+        _results.push(drawtouch(touch, count, e.touches));
+      }
+      return _results;
+    };
+    window.canvas.onmousedown = function(e) {
+      return window.mouseIsDown = true;
+    };
+    window.canvas.onmouseup = function(e) {
+      return window.mouseIsDown = false;
+    };
+    window.canvas.onmousemove = function(e) {
+      if (window.mouseIsDown) return ellipse(e.pageX, e.pageY);
+    };
+    window.canvas.width = window.canvas.offsetWidth;
+    window.canvas.height = window.canvas.offsetHeight;
+    return animate();
+  };
+
+}).call(this);
