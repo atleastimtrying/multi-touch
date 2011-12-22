@@ -1,63 +1,92 @@
 (function() {
-  var animate, drawtouch, ellipse;
+  var App;
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  animate = function() {
-    window.context.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    window.context.fillRect(0, 0, window.canvas.width, window.canvas.height);
-    return window.setTimeout(animate);
-  };
+  App = (function() {
 
-  ellipse = function(x, y) {
-    window.context.strokeStyle = '#ffffff';
-    window.context.beginPath();
-    window.context.arc(x, y, 10, 0, Math.PI * 2, false);
-    window.context.closePath();
-    return context.stroke();
-  };
-
-  drawtouch = function(touch, count, array) {
-    ellipse(touch.pageX, touch.pageY);
-    window.context.moveTo(touch.pageX, touch.pageY);
-    if (count === array.length - 1) {
-      window.context.lineTo(array[0].pageX, array[0].pageY);
-    } else {
-      window.context.lineTo(array[count + 1].pageX, array[count + 1].pageY);
+    function App() {
+      this.touchMove = __bind(this.touchMove, this);
+      this.mouseMove = __bind(this.mouseMove, this);
+      this.mouseUp = __bind(this.mouseUp, this);
+      this.mouseDown = __bind(this.mouseDown, this);
+      this.resize = __bind(this.resize, this);
+      this.animate = __bind(this.animate, this);      this.canvas = document.getElementById('view');
+      this.context = this.canvas.getContext('2d');
+      this.mouseIsDown = false;
+      this.bindEvents();
+      this.resize();
+      this.animate();
     }
-    return window.context.stroke();
-  };
 
-  window.onresize = function(e) {
-    window.canvas.width = window.canvas.offsetWidth = window.innerWidth;
-    return window.canvas.height = window.canvas.offsetHeight = window.innerHeight;
-  };
+    App.prototype.bindEvents = function() {
+      window.onresize = this.resize;
+      this.canvas.ontouchmove = this.touchMove;
+      this.canvas.onmousemove = this.mouseMove;
+      this.canvas.onmousedown = this.mouseDown;
+      return this.canvas.onmouseup = this.mouseUp;
+    };
 
-  window.onload = function() {
-    window.canvas = document.getElementById('view');
-    window.context = window.canvas.getContext('2d');
-    window.mouseIsDown = false;
-    window.canvas.ontouchmove = function(e) {
+    App.prototype.animate = function() {
+      this.context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      return window.setTimeout(this.animate);
+    };
+
+    App.prototype.ellipse = function(x, y) {
+      this.context.strokeStyle = '#ffffff';
+      this.context.beginPath();
+      this.context.arc(x, y, 10, 0, Math.PI * 2, false);
+      this.context.closePath();
+      return this.context.stroke();
+    };
+
+    App.prototype.drawTouch = function(touch, count, array) {
+      this.ellipse(touch.pageX, touch.pageY);
+      this.context.moveTo(touch.pageX, touch.pageY);
+      if (count === array.length - 1) {
+        this.context.lineTo(array[0].pageX, array[0].pageY);
+      } else {
+        this.context.lineTo(array[count + 1].pageX, array[count + 1].pageY);
+      }
+      return this.context.stroke();
+    };
+
+    App.prototype.resize = function(e) {
+      this.canvas.width = this.canvas.offsetWidth = window.innerWidth;
+      return this.canvas.height = this.canvas.offsetHeight = window.innerHeight;
+    };
+
+    App.prototype.mouseDown = function(e) {
+      return this.mouseIsDown = true;
+    };
+
+    App.prototype.mouseUp = function(e) {
+      return this.mouseIsDown = false;
+    };
+
+    App.prototype.mouseMove = function(e) {
+      if (this.mouseIsDown) return this.ellipse(e.pageX, e.pageY);
+    };
+
+    App.prototype.touchMove = function(e) {
       var count, touch, _len, _ref, _results;
       e.preventDefault();
       _ref = e.touches;
       _results = [];
       for (count = 0, _len = _ref.length; count < _len; count++) {
         touch = _ref[count];
-        _results.push(drawtouch(touch, count, e.touches));
+        _results.push(this.drawTouch(touch, count, e.touches));
       }
       return _results;
     };
-    window.canvas.onmousedown = function(e) {
-      return window.mouseIsDown = true;
-    };
-    window.canvas.onmouseup = function(e) {
-      return window.mouseIsDown = false;
-    };
-    window.canvas.onmousemove = function(e) {
-      if (window.mouseIsDown) return ellipse(e.pageX, e.pageY);
-    };
-    window.canvas.width = window.canvas.offsetWidth;
-    window.canvas.height = window.canvas.offsetHeight;
-    return animate();
+
+    return App;
+
+  })();
+
+  window.onload = function() {
+    var app;
+    return app = new App();
   };
 
 }).call(this);
