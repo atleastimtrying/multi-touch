@@ -1,4 +1,9 @@
 
+  window.onload = function() {
+    window.processing = new Processing(document.getElementById('view'), window.sketch);
+    return document.getElementById('view').ontouchmove = window.touches;
+  };
+
   window.sketch = function(p5) {
     p5.setup = function() {
       p5.colorMode(p5.HSB, 300, 10, 10, 10);
@@ -26,25 +31,17 @@
   window.touches = function(e) {
     var count, touch, _len, _ref, _results;
     e.preventDefault();
-    _ref = e.originalEvent.touches;
+    _ref = e.touches;
     _results = [];
     for (count = 0, _len = _ref.length; count < _len; count++) {
       touch = _ref[count];
-      _results.push(window.drawdot(touch, count, e.originalEvent.touches));
+      _results.push(window.drawdot(touch, count, e.touches));
     }
     return _results;
   };
 
-  $(function() {
-    var canvas;
-    canvas = $("canvas");
-    window.processing = new Processing(canvas[0], window.sketch);
-    $(window).resize(function() {
-      $("canvas").css({
-        height: $(window).height(),
-        width: $(window).width()
-      });
-      return processing.size($(window).width(), $(window).height());
-    });
-    return $("canvas").bind('touchmove', window.touches);
-  });
+  window.onresize = function(e) {
+    (document.getElementById('view')).style.width = window.innerWidth;
+    (document.getElementById('view')).style.height = window.innerHeight;
+    return window.processing.size(window.innerWidth, window.innerHeight);
+  };

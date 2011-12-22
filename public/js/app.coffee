@@ -1,7 +1,12 @@
+window.onload = ->
+  window.processing = new Processing document.getElementById('view'), window.sketch
+  document.getElementById('view').ontouchmove = window.touches
+  
+
 window.sketch = (p5) ->
   p5.setup = ->
     p5.colorMode p5.HSB, 300, 10, 10, 10
-    p5.size(window.innerWidth, window.innerHeight)
+    p5.size window.innerWidth, window.innerHeight
     p5.smooth()
     p5.background 0
   p5.draw = ->
@@ -19,15 +24,9 @@ window.drawdot = (touch, count, array)->
 
 window.touches = (e)->
   e.preventDefault();
-  window.drawdot touch, count, e.originalEvent.touches for touch, count in e.originalEvent.touches
+  window.drawdot(touch, count, e.touches) for touch, count in e.touches
 
-$ ->
-  canvas = $("canvas")
-  window.processing = new Processing canvas[0], window.sketch
-  $(window).resize ->
-    $("canvas").css {
-      height : $(window).height()
-      width : $(window).width()
-    }
-    processing.size $(window).width(), $(window).height()
-  $("canvas").bind 'touchmove', window.touches
+window.onresize = (e)->
+  (document.getElementById 'view').style.width = window.innerWidth
+  (document.getElementById 'view').style.height = window.innerHeight
+  window.processing.size window.innerWidth, window.innerHeight
