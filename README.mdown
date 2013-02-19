@@ -1,7 +1,8 @@
-#Gravity
+#Multi Touch
 
-This project is intended for me to explore the possibilities of drawing with multi touch.
-now with no external apis!
+A simple experiment to explore the various touch events afforded by javascript. 
+The graphics are provided by canvas and make use of event.touches to draw each point. 
+This should work on most touch devices but was aimed at the iPad.
 
 Anders
 ^__^
